@@ -46,11 +46,15 @@ function Cart() {
 
   const {data, data1, cart, cart1, setData, setData1, setCart, setCart1, setFocus} = useContext(ShopeContext)
 
-  if (cart.length == 0 ) {
+  useEffect(()=>{
+    if (cart.length == 0 ) {
     
-    setFocus("product")
-    navigate("/")
-  }
+      
+      navigate("/")
+      setFocus("product")
+    }
+  })
+  
 
   const total = () => {
     let sum = 0
