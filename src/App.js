@@ -1,23 +1,95 @@
-import logo from './logo.svg';
-import './App.css';
+/* eslint-disable no-unused-vars */
+/* eslint-disable eqeqeq */
+/* eslint-disable array-callback-return */
+/* eslint-disable jsx-a11y/img-redundant-alt */
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import logo from "./logo.svg";
+import "./App.css";
+import React, { useState, useEffect, useMemo, createContext } from "react";
+
+import {
+  DropdownButton,
+  Dropdown,
+  Button,
+  Navbar,
+  Container,
+  Nav,
+  NavDropdown,
+  Form,
+  FormControl,
+  Row,
+  Col,
+} from "react-bootstrap";
+
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import axios from "axios";
+import Home from "./components/home";
+import Cart from "./components/cart";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+
+export const ShopeContext = createContext();
 
 function App() {
+  const [data, setData] = useState([]);
+  const [data1, setData1] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [cart1, setCart1] = useState([]);
+  const [focus, setFocus] = useState("product");
+
+  let contextData = {
+    data: data,
+    data1: data1,
+    cart: cart,
+    cart1: cart1,
+    setData: setData,
+    setData1: setData1,
+    setCart: setCart,
+    setCart1: setCart1,
+    setFocus: setFocus,
+  };
+
+  useEffect(() => {
+    axios
+      .get(
+        "https://geektrust.s3.ap-southeast-1.amazonaws.com/coding-problems/shopping-cart/catalogue.json"
+      )
+      .then((res) => {
+        console.log(res.data);
+        const resData = res.data.map((val) => {
+          return { ...val, storage: val.quantity, select: 0 };
+        });
+        console.log("resData", resData);
+        setData(resData);
+        setData1(resData);
+      });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div class="bg-light">
+      <Router>
+      <ShopeContext.Provider value={contextData}>
+        <Navbar bg="primary" fixed="top">
+          <Container>
+            <Navbar.Brand href="#">
+              <div className="display-6 text-white">Navbar scroll</div>
+            </Navbar.Brand>
+            <Link to="/" className={`btn btn-primary ms-auto  ${focus == "product" ? "border" : "" }`} onClick={() => {setFocus("product")}}>Products</Link>
+            <Link to="/cart">
+            <Link to="/cart" className={`btn btn-primary position-relative ${focus == "cart" ? "border" : "" }`} onClick={() => {setFocus("cart")}}>
+              <AiOutlineShoppingCart style={{ fontSize: "30px" }} />
+              <span class="position-absolute top-0 start-50 badge rounded-pill text-primary bg-white">
+                {cart.length > 0 ? <>{cart.length}</> : null}
+              </span>
+            </Link>
+            </Link>
+          </Container>
+        </Navbar>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/cart" element={<Cart />} />
+          </Routes>
+      </ShopeContext.Provider>
+      </Router>
     </div>
   );
 }

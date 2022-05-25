@@ -36,3 +36,24 @@
     transform: rotate(360deg);
   }
 }
+
+
+/*images*/
+
+
+@media  ( max-width: 768px) {
+  .image-size{
+    height: 250px !important;
+  }
+}
+
+@media  (min-width:350px) and ( max-width: 575.20px) {
+  .image-size{
+    height: 250px !important;
+    width:150px;
+  }
+  .card{
+    width: 300px !important;
+    margin: auto;
+  }
+}
