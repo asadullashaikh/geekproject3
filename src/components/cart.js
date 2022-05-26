@@ -172,7 +172,7 @@ function Cart() {
                               })
                           }
                         </select>
-                        <Button variant="outline-danger w-50 my-3 mx-auto" onChange={(e)=> {deleteiteam("delete", val.id)}} >Delete</Button>
+                        <Button variant="outline-danger w-50 my-3 mx-auto" onClick={()=> {deleteiteam("delete", val.id)}} >Delete</Button>
                       </div>
                     </Col>
                   </Row>
