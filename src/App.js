@@ -20,8 +20,8 @@ export const ShopeContext = createContext(); // create context
 function App() {
   const [data, setData] = useState([]);
   const [data1, setData1] = useState([]);
-  const [cart, setCart] = useState([]);
-  const [cart1, setCart1] = useState([]);
+  const [cart, setCart] = useState([]);     // cart is used for store selected product
+  const [cart1, setCart1] = useState([]);   // cart1 is used for unique cart product
   const [focus, setFocus] = useState("product");
 
   // create an object to send data other coponent by usecontext

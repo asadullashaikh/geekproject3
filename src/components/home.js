@@ -35,6 +35,9 @@ function Home() {
   const [price, setPrice] = useState([]);
   const [input, setInput] = useState("");
 
+  // used following varible
+  // setState is working async so the we can access previous value instead of present value
+  // to solve that issue we re using followng variable
   let all_data = price;
   let filter_data = check;
   let filter_colordata = colordata;
@@ -44,6 +47,8 @@ function Home() {
   console.log("usecontext", useContext(ShopeContext));
   const { data, data1, cart, setData, setData1, setCart, setCart1, setFocus } =
     useContext(ShopeContext);
+
+  // useEffect used for make cart unique
   useEffect(() => {
     const array = [];
     const unique = cart.filter((ele) => {
@@ -73,37 +78,37 @@ function Home() {
   const select = (e) => {
     if (e.target.checked) {
       if (e.target.value == "min") {
+        // checkbox for price 0-250
         setPrice([...price, { min: 0, max: 250 }]);
         all_data = [...price, { min: 0, max: 250 }];
-        f();
+        filterCheck();
       } else if (e.target.value == "mid") {
+        // checkbox for price 251-450
         setPrice([...price, { min: 251, max: 450 }]);
         all_data = [...price, { min: 251, max: 450 }];
-        f();
+        filterCheck();
       } else if (e.target.value == "max") {
+        // checkbox for price 451-500
         setPrice([...price, { min: 451, max: 500 }]);
         all_data = [...price, { min: 451, max: 500 }];
-        f();
+        filterCheck();
       } else if (e.target.name == "color") {
+        // checkbox for color
         filter_colordata = [...colordata, e.target.value];
         setColordata([...colordata, e.target.value]);
-        f();
+        filterCheck();
       } else if (e.target.name == "gender") {
         filter_genderdata = [...genderdata, e.target.value];
         setGenderdata([...genderdata, e.target.value]);
-        f();
+        filterCheck();
         console.log("e.target.value", e.target.value);
       } else if (e.target.name == "type") {
         filter_typedata = [...typedata, e.target.value];
         console.log("filter_typedata", filter_typedata);
         setTypedata([...typedata, e.target.value]);
-        f();
+        filterCheck();
       }
     } else {
-      const new1 = check.filter((val) => {
-        return val != e.target.value;
-      });
-
       if (e.target.name == "color") {
         const new1 = colordata.filter((val) => {
           return val != e.target.value;
@@ -112,14 +117,14 @@ function Home() {
         console.log("====================");
         console.log("new1", new1);
         setColordata(new1);
-        f();
+        filterCheck();
       } else if (e.target.name == "gender") {
         const new1 = genderdata.filter((val) => {
           return val != e.target.value;
         });
         filter_genderdata = new1;
         setGenderdata(new1);
-        f();
+        filterCheck();
         console.log("e.target.value", e.target.value);
       } else if (e.target.name == "type") {
         const new1 = typedata.filter((val) => {
@@ -127,7 +132,7 @@ function Home() {
         });
         filter_typedata = new1;
         setTypedata(new1);
-        f();
+        filterCheck();
       } else if (e.target.name == "Price") {
         const newprice = price.filter((val) => {
           if (e.target.value == "min") {
@@ -140,143 +145,71 @@ function Home() {
         });
         all_data = newprice;
         setPrice(newprice);
-        f();
+        filterCheck();
         console.log("price", all_data);
       }
     }
   };
 
-  const f = () => {
+  const filterCheck = () => {
     console.log("input", input);
     if (input.length > 0) {
-      if (
-        filter_colordata.length == 0 &&
-        filter_genderdata == 0 &&
-        filter_typedata.length == 0 &&
-        all_data.length == 0
-      ) {
-        setData(data_l);
-      } else {
-        console.log("====working===================", data_l);
-        fiterData(data_l);
-      }
+      setData(data_l);
     } else {
-      if (
-        filter_colordata.length == 0 &&
-        filter_genderdata == 0 &&
-        filter_typedata.length == 0 &&
-        all_data.length == 0
-      ) {
-        setData(data1);
-      } else {
-        fiterData(data1);
-      }
+      fiterData(data1);
     }
   };
 
+  // filter data according checkbox selected element
+
   const fiterData = (inputData) => {
-    console.log("====2===================");
     if (
-      filter_colordata.length > 0 &&
-      filter_genderdata.length == 0 &&
+      filter_colordata.length == 0 &&
+      filter_genderdata == 0 &&
       filter_typedata.length == 0 &&
       all_data.length == 0
     ) {
-      const ckeck_box_data = inputData.filter((item) => {
-        return Object.keys(item).some((key) => {
-          return filter_colordata.includes(item[key]);
-        });
-      });
-      setData(ckeck_box_data);
-    } else if (
-      filter_genderdata.length > 0 &&
-      filter_typedata.length == 0 &&
-      all_data.length == 0
-    ) {
-      let ckeck_box_data = inputData.filter((item) => {
-        return Object.keys(item).some((key) => {
-          return filter_genderdata.includes(item[key]);
-        });
-      });
-
-      if (filter_colordata.length > 0) {
-        ckeck_box_data = ckeck_box_data.filter((item) => {
-          return Object.keys(item).some((key) => {
-            return filter_colordata.includes(item[key]);
-          });
-        });
-      }
-      setData(ckeck_box_data);
-    } else if (filter_typedata.length > 0 && all_data.length == 0) {
-      let ckeck_box_data = inputData.filter((item) => {
-        return Object.keys(item).some((key) => {
-          return filter_typedata.includes(item[key]);
-        });
-      });
-
-      if (filter_colordata.length > 0 && filter_genderdata.length == 0) {
-        ckeck_box_data = ckeck_box_data.filter((item) => {
-          return Object.keys(item).some((key) => {
-            return filter_colordata.includes(item[key]);
-          });
-        });
-      } else if (filter_genderdata.length > 0) {
-        ckeck_box_data = ckeck_box_data.filter((item) => {
-          return Object.keys(item).some((key) => {
-            return filter_genderdata.includes(item[key]);
-          });
-        });
-
-        if (filter_colordata.length > 0) {
-          ckeck_box_data = ckeck_box_data.filter((item) => {
-            return Object.keys(item).some((key) => {
-              return filter_colordata.includes(item[key]);
-            });
-          });
-        }
-      }
-      setData(ckeck_box_data);
-    } else if (all_data.length > 0) {
-      let ckeck_box_data = inputData.filter((item) => {
-        return Object.keys(item).some((key) => {
-          return all_data.some((ele) => {
-            return ele["max"] >= item["price"] && ele["min"] <= item["price"];
-          });
-        });
-      });
-
-      if (
+      setData(inputData);
+    } else {
+      if (                                    //-------filter 1
         filter_colordata.length > 0 &&
         filter_genderdata.length == 0 &&
-        filter_typedata.length == 0
+        filter_typedata.length == 0 &&
+        all_data.length == 0
       ) {
-        ckeck_box_data = ckeck_box_data.filter((item) => {
+        const ckeck_box_data = inputData.filter((item) => { // filter data acccording to colordata
           return Object.keys(item).some((key) => {
             return filter_colordata.includes(item[key]);
           });
         });
-      } else if (filter_genderdata.length > 0 && filter_typedata.length == 0) {
-        ckeck_box_data = ckeck_box_data.filter((item) => {
+        setData(ckeck_box_data);
+      } else if (                        // ------------filter 2
+        filter_genderdata.length > 0 &&
+        filter_typedata.length == 0 &&
+        all_data.length == 0
+      ) {
+        let ckeck_box_data = inputData.filter((item) => {
           return Object.keys(item).some((key) => {
             return filter_genderdata.includes(item[key]);
           });
         });
 
-        if (filter_colordata.length > 0) {
+        if (filter_colordata.length > 0) {        // filter data acccording to colordata
           ckeck_box_data = ckeck_box_data.filter((item) => {
             return Object.keys(item).some((key) => {
               return filter_colordata.includes(item[key]);
             });
           });
         }
-      } else if (filter_typedata.length > 0) {
-        ckeck_box_data = ckeck_box_data.filter((item) => {
+        setData(ckeck_box_data);
+      } else if (filter_typedata.length > 0 && all_data.length == 0) {   // ------------filter 3
+        let ckeck_box_data = inputData.filter((item) => {          // filter data acccording to typedata
           return Object.keys(item).some((key) => {
             return filter_typedata.includes(item[key]);
           });
         });
 
-        if (filter_colordata.length > 0 && filter_genderdata.length == 0) {
+        if (filter_colordata.length > 0 && filter_genderdata.length == 0) {          // filter data acccording to colordata
           ckeck_box_data = ckeck_box_data.filter((item) => {
             return Object.keys(item).some((key) => {
               return filter_colordata.includes(item[key]);
@@ -289,7 +222,7 @@ function Home() {
             });
           });
 
-          if (filter_colordata.length > 0) {
+          if (filter_colordata.length > 0) {          // filter data acccording to colordata
             ckeck_box_data = ckeck_box_data.filter((item) => {
               return Object.keys(item).some((key) => {
                 return filter_colordata.includes(item[key]);
@@ -297,19 +230,76 @@ function Home() {
             });
           }
         }
-      }
-
-      setData(ckeck_box_data);
-    }
-
-    /*let filteredData = data1;
-      filter_data.forEach((ele) => {
-        filteredData = filteredData.filter((item) => {
+        setData(ckeck_box_data);
+      } else if (all_data.length > 0) {          // ---------filter 4
+        let ckeck_box_data = inputData.filter((item) => {
           return Object.keys(item).some((key) => {
-            return ele.includes(item[key]);
+            return all_data.some((ele) => {
+              return ele["max"] >= item["price"] && ele["min"] <= item["price"];
+            });
           });
         });
-      });*/
+
+        if (
+          filter_colordata.length > 0 &&
+          filter_genderdata.length == 0 &&
+          filter_typedata.length == 0
+        ) {
+          ckeck_box_data = ckeck_box_data.filter((item) => {      // filter data acccording to colordata
+            return Object.keys(item).some((key) => {
+              return filter_colordata.includes(item[key]);
+            });
+          });
+        } else if (
+          filter_genderdata.length > 0 &&
+          filter_typedata.length == 0
+        ) {
+          ckeck_box_data = ckeck_box_data.filter((item) => {
+            return Object.keys(item).some((key) => {
+              return filter_genderdata.includes(item[key]);
+            });
+          });
+
+          if (filter_colordata.length > 0) {           // filter data acccording to colordata
+            ckeck_box_data = ckeck_box_data.filter((item) => {
+              return Object.keys(item).some((key) => {
+                return filter_colordata.includes(item[key]);
+              });
+            });
+          }
+        } else if (filter_typedata.length > 0) {       // filter data acccording to typedata
+          ckeck_box_data = ckeck_box_data.filter((item) => {
+            return Object.keys(item).some((key) => {
+              return filter_typedata.includes(item[key]);
+            });
+          });
+
+          if (filter_colordata.length > 0 && filter_genderdata.length == 0) {
+            ckeck_box_data = ckeck_box_data.filter((item) => {
+              return Object.keys(item).some((key) => {
+                return filter_colordata.includes(item[key]);
+              });
+            });
+          } else if (filter_genderdata.length > 0) {
+            ckeck_box_data = ckeck_box_data.filter((item) => {
+              return Object.keys(item).some((key) => {
+                return filter_genderdata.includes(item[key]);
+              });
+            });
+
+            if (filter_colordata.length > 0) {          // filter data acccording to colordata
+              ckeck_box_data = ckeck_box_data.filter((item) => {
+                return Object.keys(item).some((key) => {
+                  return filter_colordata.includes(item[key]);
+                });
+              });
+            }
+          }
+        }
+
+        setData(ckeck_box_data);
+      }
+    }
   };
 
   const search = (e) => {
@@ -330,6 +320,8 @@ function Home() {
     }
   };
 
+
+  // add data in cart
   const cart_all = (id, l) => {
     if (l == "add_product") {
       data.forEach((l) => {
@@ -363,8 +355,7 @@ function Home() {
 
   return (
     <div class="position-relative mt-5 pt-5">
-
-    {/* ======================================Container search start ============================== */}
+      {/* ======================================Container search start ============================== */}
 
       <Container className="my-5">
         <Form
@@ -542,14 +533,16 @@ function Home() {
         </Form>
       </Container>
 
-    {/* ======================================Container search end ============================== */}
-    
-    {/* ======================================Container start =================================== */}
+      {/* ======================================Container search end ============================== */}
+
+      {/* ======================================Container start =================================== */}
       <div class="container">
         {/* ------------------------- row1 start--------------------- */}
         <Row>
           {/* ------------------------- col1 filter start--------------------- */}
-          <Col xl={2} className="d-none d-lg-block"> {/* this col will hide at below lg ( large screen ) */}
+          <Col xl={2} className="d-none d-lg-block">
+            {" "}
+            {/* this col will hide at below lg ( large screen ) */}
             {/* ------------------------- row1 col1 row 1 start--------------------- */}
             <Row className="bg-white shadow p-2 mb-5">
               {/* ------------------------- row1 col1 row 1 col1 start--------------------- */}
@@ -665,7 +658,6 @@ function Home() {
                 </fieldset>
               </Col>
               {/* ------------------------- row1 col1 row 1 col4 end--------------------- */}
-              
             </Row>
             {/* ------------------------- row1 col1 row 1 end--------------------- */}
           </Col>
@@ -677,7 +669,7 @@ function Home() {
               {data.map((val) => {
                 return (
                   <Col sm={6} lg={4} className="mb-5 px-3">
-                    <div class="card shadow p-2">
+                    <div class="card card-1 shadow p-2">
                       <img
                         src={val.imageURL}
                         alt="Card image in the top"
@@ -727,7 +719,7 @@ function Home() {
         </Row>
         {/* ------------------------- row1 end--------------------- */}
       </div>
-    {/* ======================================Container end =================================== */}
+      {/* ======================================Container end =================================== */}
     </div>
   );
 }

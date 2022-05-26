@@ -6,127 +6,115 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
 
 import {
-  DropdownButton,
-  Dropdown,
   Button,
-  Navbar,
   Container,
-  Nav,
-  NavDropdown,
-  Form,
-  FormControl,
   Row,
   Col,
 } from "react-bootstrap";
 
 import {
-  BrowserRouter as Router, Routes, Route, Link,
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
   useNavigate,
-} from 'react-router-dom';
+} from "react-router-dom";
 
-import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BiRupee } from "react-icons/bi";
-import axios from "axios";
 import { ShopeContext } from "../App";
 
 function Cart() {
-  const [data_l, setData_l] = useState([]);
-  const [check, setCheck] = useState([]);
-  const [color, setColor] = useState([]);
-  const [gender, setGender] = useState([]);
-  const [type, setType] = useState([]);
-  const [price, setPrice] = useState([]);
-  const [input, setInput] = useState("");
-  const [container, setContainer] = useState([]);
-
-  let all_data = price;
-  let filter_data = check;
 
   const navigate = useNavigate();
+  const {
+    data,
+    data1,
+    cart,
+    cart1,
+    setData,
+    setData1,
+    setCart,
+    setCart1,
+    setFocus,
+  } = useContext(ShopeContext);
 
-  const {data, data1, cart, cart1, setData, setData1, setCart, setCart1, setFocus} = useContext(ShopeContext)
-
-  useEffect(()=>{
-    if (cart.length == 0 ) {
-    
-      
-      navigate("/")
-      setFocus("product")
+  // useEffect use for checking where data is present in cart or not
+  useEffect(() => {
+    if (cart.length == 0) {
+      navigate("/");
+      setFocus("product");
     }
-  })
-  
+  });
+
+  useEffect(() => {
+    const array = [];
+    const unique = cart.filter((ele) => {
+      if (!array.includes(ele)) {
+        array.push(ele);
+        return true;
+      }
+    });
+    setCart1(unique);
+  }, [cart]);
 
   const total = () => {
-    let sum = 0
+    let sum = 0;
     cart1.map((val) => {
-      sum += (val.select * val.price)
-    })
-    return sum
-  }
+      sum += val.select * val.price;
+    });
+    return sum;
+  };
 
-  const deleteiteam = (option,id) => {
-    if(option == "delete"){
-    const cart2 = cart.filter((val)=>{
-      return val.id != id 
-    })
-    const cart3 = data1.filter((val)=>{
-        if(val.id == id){
+  const deleteiteam = (option, id) => {
+    if (option == "delete") {
+      // delete product inside the cart with respect to id
+      const cart2 = cart.filter((val) => {
+        return val.id != id;
+      });
+      const cart3 = data1.filter((val) => {
+        if (val.id == id) {
           val.quantity = val.storage;
           val.select = 0;
           return val;
         } else {
           return val;
         }
-    })
-    setData1(cart3)
-    setCart(cart2)
+      });
+      setData1(cart3);
+      setCart(cart2);
     } else {
-      const cart2 = cart.filter((val)=>{
-        return val.id != id 
-      })
-      const cart3 = data1.filter((val)=>{
-        if(val.id == id){
+      // increase or decrease product in cart
+      const cart2 = cart.filter((val) => {
+        return val.id != id;
+      });
+      const cart3 = data1.filter((val) => {
+        if (val.id == id) {
           val.quantity = val.storage;
           val.select = 0;
           return val;
         } else {
           return val;
         }
-    })
-      console.log("cart2", cart2)
-      const array = []
-      const cart4 =cart3.map((val) => {
-        if(val.id == id){
-          for(let i = 0; i<=option; i++){
-            console.log("i", i)
-            console.log("option", option)
+      });
+      const array = [];
+      const cart4 = cart3.map((val) => {
+        if (val.id == id) {
+          for (let i = 0; i <= option; i++) {
+            console.log("i", i);
+            console.log("option", option);
             val.quantity = val.quantity - 1;
             val.select = val.storage - val.quantity;
-            cart2.push(val)
-            
+            cart2.push(val);
           }
-          array.push(val)
+          array.push(val);
         } else {
-          array.push(val)
+          array.push(val);
         }
-      })
-      console.log("cart222", cart2)
-
-      setCart(cart2)
-      setData1(array)
-      
+      });
+      setCart(cart2);
+      setData1(array);
     }
-  }
-
-
-
-  console.log("cart1", cart1);
-
-
-
-
-
-
+  };
 
   return (
     <div class="bg-light pt-5 mt-5">
@@ -159,20 +147,32 @@ function Cart() {
                         <select
                           class="form-select w-25"
                           aria-label="Default select example"
-                          onChange={(e)=> {deleteiteam(e.target.value, val.id)}}
+                          onChange={(e) => {
+                            deleteiteam(e.target.value, val.id);
+                          }}
                         >
                           <option value="delete">delete</option>
-                          {
-                              new Array(val.storage).fill(0).map((l, ll) => {
-                                if(ll+1 == val.select){
-                                  return <option value={ll} selected> {ll+1} </option>
-                                } else {
-                                 return <option value={ll}> {ll+1} </option>
-                                }
-                              })
-                          }
+                          {new Array(val.storage).fill(0).map((l, ll) => {
+                            if (ll + 1 == val.select) {
+                              return (
+                                <option value={ll} selected>
+                                  {" "}
+                                  {ll + 1}{" "}
+                                </option>
+                              );
+                            } else {
+                              return <option value={ll}> {ll + 1} </option>;
+                            }
+                          })}
                         </select>
-                        <Button variant="outline-danger w-50 my-3 mx-auto" onClick={()=> {deleteiteam("delete", val.id)}} >Delete</Button>
+                        <Button
+                          variant="outline-danger w-50 my-3 mx-auto"
+                          onClick={() => {
+                            deleteiteam("delete", val.id);
+                          }}
+                        >
+                          Delete
+                        </Button>
                       </div>
                     </Col>
                   </Row>
@@ -182,13 +182,21 @@ function Cart() {
           })}
         </Row>
       </Container>
-      { cart1.length > 0 ? <div class="fixed-bottom text-end h5 bg-light" style={{height:"50px", marginBottom:"0px"}} >
-        <Container>
-        <span class="display-6" style={{fontSize:"30px"}}>Total  </span><span>Rs {
-          total()
-          }</span>
-        </Container>
-      </div> : <></>}
+      {cart1.length > 0 ? (
+        <div
+          class="fixed-bottom text-end h5 bg-light"
+          style={{ height: "50px", marginBottom: "0px" }}
+        >
+          <Container>
+            <span class="display-6" style={{ fontSize: "30px" }}>
+              Total{" "}
+            </span>
+            <span>Rs {total()}</span>
+          </Container>
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
