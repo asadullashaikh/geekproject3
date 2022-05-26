@@ -38,6 +38,16 @@
 }
 
 
+.select-value{
+  width: 25% !important;
+}
+
+@media  ( max-width: 768px ) {
+  .select-value{
+    width: 100% !important;
+  }  
+}
+
 /*images*/
 
 
@@ -52,7 +62,7 @@
     height: 250px !important;
     width:150px;
   }
-  .card-1{
+  .card1{
     width: 300px !important;
     margin: auto;
   }

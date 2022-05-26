@@ -141,11 +141,11 @@ function Cart() {
                         {val.quantity > 0 ? (
                           <p class="text-success">in stock</p>
                         ) : (
-                          <p class="text-danger">out of stock</p>
+                          <p class="text-danger ">out of stock</p>
                         )}
                         <p class="card-title">type : {val.type}</p>
                         <select
-                          class="form-select w-25"
+                          class="form-select select-value"
                           aria-label="Default select example"
                           onChange={(e) => {
                             deleteiteam(e.target.value, val.id);
