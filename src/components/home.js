@@ -3,7 +3,7 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable jsx-a11y/img-redundant-alt */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useState, useEffect, useMemo, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import {
   DropdownButton,
@@ -21,12 +21,9 @@ import {
 
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { FiFilter } from "react-icons/fi";
-import axios from "axios";
 import { ShopeContext } from "../App";
 
 function Home() {
-  //const [data, setData] = useState([]);
-  //const [data1, setData1] = useState([]);
   const [data_l, setData_l] = useState([]);
   const [check, setCheck] = useState([]);
   const [color, setColor] = useState([]);
@@ -37,8 +34,6 @@ function Home() {
   const [typedata, setTypedata] = useState([]);
   const [price, setPrice] = useState([]);
   const [input, setInput] = useState("");
-  //const [container, setContainer] = useState([]);
-  //const [cart, setCart] = useState([]);
 
   let all_data = price;
   let filter_data = check;
@@ -72,7 +67,7 @@ function Home() {
         setType([...type, val[ele]]);
       }
     });
-    setFocus("product")
+    setFocus("product");
   });
 
   const select = (e) => {
@@ -146,13 +141,13 @@ function Home() {
         all_data = newprice;
         setPrice(newprice);
         f();
-        console.log("price", all_data)
+        console.log("price", all_data);
       }
     }
   };
 
   const f = () => {
-    console.log("input", input)
+    console.log("input", input);
     if (input.length > 0) {
       if (
         filter_colordata.length == 0 &&
@@ -161,9 +156,8 @@ function Home() {
         all_data.length == 0
       ) {
         setData(data_l);
-        
       } else {
-        console.log("====working===================",data_l);
+        console.log("====working===================", data_l);
         fiterData(data_l);
       }
     } else {
@@ -174,34 +168,60 @@ function Home() {
         all_data.length == 0
       ) {
         setData(data1);
-        
       } else {
-      fiterData(data1);
+        fiterData(data1);
       }
     }
   };
 
   const fiterData = (inputData) => {
-    
-      console.log("====2===================");
-      if (
-        filter_colordata.length > 0 &&
-        filter_genderdata.length == 0 &&
-        filter_typedata.length == 0 && 
-        all_data.length == 0
-      ) {
-        const ckeck_box_data = inputData.filter((item) => {
+    console.log("====2===================");
+    if (
+      filter_colordata.length > 0 &&
+      filter_genderdata.length == 0 &&
+      filter_typedata.length == 0 &&
+      all_data.length == 0
+    ) {
+      const ckeck_box_data = inputData.filter((item) => {
+        return Object.keys(item).some((key) => {
+          return filter_colordata.includes(item[key]);
+        });
+      });
+      setData(ckeck_box_data);
+    } else if (
+      filter_genderdata.length > 0 &&
+      filter_typedata.length == 0 &&
+      all_data.length == 0
+    ) {
+      let ckeck_box_data = inputData.filter((item) => {
+        return Object.keys(item).some((key) => {
+          return filter_genderdata.includes(item[key]);
+        });
+      });
+
+      if (filter_colordata.length > 0) {
+        ckeck_box_data = ckeck_box_data.filter((item) => {
           return Object.keys(item).some((key) => {
             return filter_colordata.includes(item[key]);
           });
         });
-        setData(ckeck_box_data);
-      } else if (
-        filter_genderdata.length > 0 &&
-        filter_typedata.length == 0 && 
-        all_data.length == 0
-      ) {
-        let ckeck_box_data = inputData.filter((item) => {
+      }
+      setData(ckeck_box_data);
+    } else if (filter_typedata.length > 0 && all_data.length == 0) {
+      let ckeck_box_data = inputData.filter((item) => {
+        return Object.keys(item).some((key) => {
+          return filter_typedata.includes(item[key]);
+        });
+      });
+
+      if (filter_colordata.length > 0 && filter_genderdata.length == 0) {
+        ckeck_box_data = ckeck_box_data.filter((item) => {
+          return Object.keys(item).some((key) => {
+            return filter_colordata.includes(item[key]);
+          });
+        });
+      } else if (filter_genderdata.length > 0) {
+        ckeck_box_data = ckeck_box_data.filter((item) => {
           return Object.keys(item).some((key) => {
             return filter_genderdata.includes(item[key]);
           });
@@ -214,9 +234,43 @@ function Home() {
             });
           });
         }
-        setData(ckeck_box_data);
-      } else if (filter_typedata.length > 0 && all_data.length == 0) {
-        let ckeck_box_data = inputData.filter((item) => {
+      }
+      setData(ckeck_box_data);
+    } else if (all_data.length > 0) {
+      let ckeck_box_data = inputData.filter((item) => {
+        return Object.keys(item).some((key) => {
+          return all_data.some((ele) => {
+            return ele["max"] >= item["price"] && ele["min"] <= item["price"];
+          });
+        });
+      });
+
+      if (
+        filter_colordata.length > 0 &&
+        filter_genderdata.length == 0 &&
+        filter_typedata.length == 0
+      ) {
+        ckeck_box_data = ckeck_box_data.filter((item) => {
+          return Object.keys(item).some((key) => {
+            return filter_colordata.includes(item[key]);
+          });
+        });
+      } else if (filter_genderdata.length > 0 && filter_typedata.length == 0) {
+        ckeck_box_data = ckeck_box_data.filter((item) => {
+          return Object.keys(item).some((key) => {
+            return filter_genderdata.includes(item[key]);
+          });
+        });
+
+        if (filter_colordata.length > 0) {
+          ckeck_box_data = ckeck_box_data.filter((item) => {
+            return Object.keys(item).some((key) => {
+              return filter_colordata.includes(item[key]);
+            });
+          });
+        }
+      } else if (filter_typedata.length > 0) {
+        ckeck_box_data = ckeck_box_data.filter((item) => {
           return Object.keys(item).some((key) => {
             return filter_typedata.includes(item[key]);
           });
@@ -243,78 +297,12 @@ function Home() {
             });
           }
         }
-        setData(ckeck_box_data);
-      } else if (all_data.length > 0) {
-        let ckeck_box_data = inputData.filter((item) => {
-          return Object.keys(item).some((key) => {
-            return all_data.some((ele) => {
-              
-            return ele["max"] >= item["price"] && ele["min"] <= item["price"]
-          })
-          });
-        });
-
-        if (
-          filter_colordata.length > 0 &&
-          filter_genderdata.length == 0 &&
-          filter_typedata.length == 0
-        ) {
-          ckeck_box_data = ckeck_box_data.filter((item) => {
-            return Object.keys(item).some((key) => {
-              return filter_colordata.includes(item[key]);
-            });
-          });
-        } else if (
-          filter_genderdata.length > 0 &&
-          filter_typedata.length == 0 
-        ) {
-          ckeck_box_data = ckeck_box_data.filter((item) => {
-            return Object.keys(item).some((key) => {
-              return filter_genderdata.includes(item[key]);
-            });
-          });
-
-          if (filter_colordata.length > 0) {
-            ckeck_box_data = ckeck_box_data.filter((item) => {
-              return Object.keys(item).some((key) => {
-                return filter_colordata.includes(item[key]);
-              });
-            });
-          }
-        }  else if (filter_typedata.length > 0) {
-            ckeck_box_data = ckeck_box_data.filter((item) => {
-            return Object.keys(item).some((key) => {
-              return filter_typedata.includes(item[key]);
-            });
-          });
-
-          if (filter_colordata.length > 0 && filter_genderdata.length == 0) {
-            ckeck_box_data = ckeck_box_data.filter((item) => {
-              return Object.keys(item).some((key) => {
-                return filter_colordata.includes(item[key]);
-              });
-            });
-          } else if (filter_genderdata.length > 0) {
-            ckeck_box_data = ckeck_box_data.filter((item) => {
-              return Object.keys(item).some((key) => {
-                return filter_genderdata.includes(item[key]);
-              });
-            });
-
-            if (filter_colordata.length > 0) {
-              ckeck_box_data = ckeck_box_data.filter((item) => {
-                return Object.keys(item).some((key) => {
-                  return filter_colordata.includes(item[key]);
-                });
-              });
-            }
-          }
-        }
-        
-        setData(ckeck_box_data);
       }
-      
-      /*let filteredData = data1;
+
+      setData(ckeck_box_data);
+    }
+
+    /*let filteredData = data1;
       filter_data.forEach((ele) => {
         filteredData = filteredData.filter((item) => {
           return Object.keys(item).some((key) => {
@@ -322,8 +310,7 @@ function Home() {
           });
         });
       });*/
-    
-  }
+  };
 
   const search = (e) => {
     e.preventDefault();
@@ -376,6 +363,9 @@ function Home() {
 
   return (
     <div class="position-relative mt-5 pt-5">
+
+    {/* ======================================Container search start ============================== */}
+
       <Container className="my-5">
         <Form
           className="d-flex justify-content-center"
@@ -551,10 +541,18 @@ function Home() {
           </div>
         </Form>
       </Container>
+
+    {/* ======================================Container search end ============================== */}
+    
+    {/* ======================================Container start =================================== */}
       <div class="container">
+        {/* ------------------------- row1 start--------------------- */}
         <Row>
-          <Col xl={2} className="d-none d-lg-block">
+          {/* ------------------------- col1 filter start--------------------- */}
+          <Col xl={2} className="d-none d-lg-block"> {/* this col will hide at below lg ( large screen ) */}
+            {/* ------------------------- row1 col1 row 1 start--------------------- */}
             <Row className="bg-white shadow p-2 mb-5">
+              {/* ------------------------- row1 col1 row 1 col1 start--------------------- */}
               <Col sm={3} xl={12}>
                 <legend>Colors</legend>
                 <Form
@@ -576,6 +574,9 @@ function Home() {
                   })}
                 </Form>
               </Col>
+              {/* ------------------------- row1 col1 row 1 col1 end--------------------- */}
+
+              {/* ------------------------- row1 col1 row 1 col2 start--------------------- */}
               <Col sm={3} xl={12}>
                 <fieldset>
                   <legend>Gender</legend>
@@ -599,6 +600,9 @@ function Home() {
                   </Form>
                 </fieldset>
               </Col>
+              {/* ------------------------- row1 col1 row 1 col2 end--------------------- */}
+
+              {/* ------------------------- row1 col1 row 1 col3 start--------------------- */}
               <Col sm={3} xl={12}>
                 <fieldset>
                   <legend>Types</legend>
@@ -622,6 +626,9 @@ function Home() {
                   </Form>
                 </fieldset>
               </Col>
+              {/* ------------------------- row1 col1 row 1 col3 end--------------------- */}
+
+              {/* ------------------------- row1 col1 row 1 col4 start--------------------- */}
               <Col sm={3} xl={12}>
                 <fieldset>
                   <legend>Price</legend>
@@ -657,8 +664,14 @@ function Home() {
                   </Form>
                 </fieldset>
               </Col>
+              {/* ------------------------- row1 col1 row 1 col4 end--------------------- */}
+              
             </Row>
+            {/* ------------------------- row1 col1 row 1 end--------------------- */}
           </Col>
+          {/* ------------------------- col1 filter end--------------------- */}
+
+          {/* ------------------------- col2 product start--------------------- */}
           <Col xl={10}>
             <Row>
               {data.map((val) => {
@@ -710,8 +723,11 @@ function Home() {
               })}
             </Row>
           </Col>
+          {/* ------------------------- col2 product end--------------------- */}
         </Row>
+        {/* ------------------------- row1 end--------------------- */}
       </div>
+    {/* ======================================Container end =================================== */}
     </div>
   );
 }

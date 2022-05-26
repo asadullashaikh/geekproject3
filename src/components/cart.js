@@ -172,7 +172,7 @@ function Cart() {
                               })
                           }
                         </select>
-                        <Button variant="outline-danger w-50 my-3 mx-auto" >Delete</Button>
+                        <Button variant="outline-danger w-50 my-3 mx-auto" onChange={(e)=> {deleteiteam("delete", val.id)}} >Delete</Button>
                       </div>
                     </Col>
                   </Row>
@@ -182,13 +182,13 @@ function Cart() {
           })}
         </Row>
       </Container>
-      <div class="fixed-bottom text-end h5 bg-light" style={{height:"50px", marginBottom:"0px"}} >
+      { cart1.length > 0 ? <div class="fixed-bottom text-end h5 bg-light" style={{height:"50px", marginBottom:"0px"}} >
         <Container>
         <span class="display-6" style={{fontSize:"30px"}}>Total  </span><span>Rs {
           total()
           }</span>
         </Container>
-      </div>
+      </div> : <></>}
     </div>
   );
 }
