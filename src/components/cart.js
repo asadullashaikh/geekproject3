@@ -138,11 +138,14 @@ function Cart() {
                         <h4 class="card-title">
                           <BiRupee /> {val.price}
                         </h4>
-                        {val.quantity > 0 ? (
-                          <p class="text-success">in stock</p>
-                        ) : (
-                          <p class="text-danger ">out of stock</p>
-                        )}
+                        <div
+                            style={{
+                              height: "20px",
+                              width: "20px",
+                              borderRadius: "50%",
+                              backgroundColor: `${val.color.toLowerCase()}`,
+                            }}
+                          ></div>
                         <p class="card-title">type : {val.type}</p>
                         <select
                           class="form-select select-value"
