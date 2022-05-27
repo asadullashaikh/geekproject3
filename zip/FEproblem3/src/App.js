@@ -64,7 +64,7 @@ function App() {
           <Navbar bg="primary" fixed="top">
             <Container>
               <Navbar.Brand href="#">
-                <div className="display-6 text-white" style={{width:"30px"}}>Teerex store</div>
+                <div className="display-6 text-white">Navbar scroll</div>
               </Navbar.Brand>
               {/*====================Product button start========================*/}
               <Link
