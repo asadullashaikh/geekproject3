@@ -54,7 +54,7 @@ function Cart() {
         return true;
       }
     });
-    setCart1(unique);
+    setCart1(unique.sort());
   }, [cart]);
 
   const total = () => {

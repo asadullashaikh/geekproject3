@@ -57,7 +57,7 @@ function Home() {
         return true;
       }
     });
-    setCart1(unique);
+    setCart1(unique.sort());
   }, [cart]);
 
   const checkdata = data.map((val) => {
