@@ -154,7 +154,7 @@ function Home() {
   const filterCheck = () => {
     console.log("input", input);
     if (input.length > 0) {
-      setData(data_l);
+      fiterData(data_l);
     } else {
       fiterData(data1);
     }
